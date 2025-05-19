@@ -1,0 +1,26 @@
+{
+  "name": "chat_app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "backend": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "install-all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "verify": "node verify-optimizations.js",
+    "optimize": "node apply-performance-fixes.js",
+    "start-optimized": "concurrently \"npm run backend\" \"npm run frontend -- --mode=production\"",
+    "clean": "rimraf frontend/node_modules/.vite && rimraf backend/node_modules/.cache"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chat_app": "file:"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "rimraf": "^5.0.5"
+  }
+}
