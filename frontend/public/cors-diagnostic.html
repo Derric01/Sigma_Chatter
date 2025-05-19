@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigma Chatter - CORS Diagnostic Tool</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2563eb;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        button:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+        pre {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 10px;
+            max-height: 300px;
+        }
+        .result-box {
+            margin: 20px 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .endpoint {
+            background-color: #f3f4f6;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .success {
+            color: #059669;
+        }
+        .error {
+            color: #dc2626;
+        }
+        .warning {
+            color: #d97706;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Sigma Chatter - CORS Diagnostic Tool</h1>
+        <a href="/">Back to App</a>
+    </div>
+    
+    <p>This tool helps diagnose CORS issues between the frontend and backend. Click the buttons below to run tests.</p>
+    
+    <div>
+        <button id="testHealthBtn">Test Health Endpoint</button>
+        <button id="testAuthBtn">Test Auth Endpoint</button>
+        <button id="testAuthWithHeadersBtn">Test With Custom Headers</button>
+        <button id="testAllBtn">Test All</button>
+        <button id="clearBtn">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <div id="recommendations" class="result-box" style="display: none;">
+        <h3>Recommendations</h3>
+        <ul id="recommendationsList"></ul>
+    </div>
+    
+    <script>
+        const resultsDiv = document.getElementById('results');
+        const recommendationsDiv = document.getElementById('recommendations');
+        const recommendationsList = document.getElementById('recommendationsList');
+        const baseUrl = 'http://localhost:5001';
+        let testResults = [];
+        
+        // Test a specific endpoint
+        async function testEndpoint(endpoint, includeCustomHeaders = false, description = '') {
+            const resultBox = document.createElement('div');
+            resultBox.className = 'result-box';
+            resultsDiv.appendChild(resultBox);
+            
+            const headerDiv = document.createElement('h3');
+            headerDiv.textContent = description || `Testing ${endpoint}`;
+            resultBox.appendChild(headerDiv);
+            
+            const endpointDiv = document.createElement('p');
+            const endpointSpan = document.createElement('span');
+            endpointSpan.className = 'endpoint';
+            endpointSpan.textContent = endpoint;
+            endpointDiv.appendChild(document.createTextNode('Endpoint: '));
+            endpointDiv.appendChild(endpointSpan);
+            resultBox.appendChild(endpointDiv);
+            
+            const headersDiv = document.createElement('p');
+            headersDiv.textContent = includeCustomHeaders ? 
+                'Using custom headers (Cache-Control, Pragma)' : 
+                'Using standard headers only';
+            resultBox.appendChild(headersDiv);
+            
+            const statusDiv = document.createElement('p');
+            statusDiv.textContent = 'Status: Testing...';
+            resultBox.appendChild(statusDiv);
+            
+            const outputPre = document.createElement('pre');
+            resultBox.appendChild(outputPre);
+            
+            try {
+                // Create headers
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                // Add custom headers if specified
+                if (includeCustomHeaders) {
+                    headers['Cache-Control'] = 'no-cache';
+                    headers['Pragma'] = 'no-cache';
+                }
+                
+                // Test preflight (OPTIONS) first
+                outputPre.textContent += '> Testing CORS preflight (OPTIONS)...\n';
+                
+                const preflightResponse = await fetch(endpoint, {
+                    method: 'OPTIONS',
+                    headers,
+                    credentials: 'include'
+                });
+                
+                // Get the CORS headers from the preflight response
+                const corsHeaders = {
+                    'Allow-Origin': preflightResponse.headers.get('Access-Control-Allow-Origin'),
+                    'Allow-Methods': preflightResponse.headers.get('Access-Control-Allow-Methods'),
+                    'Allow-Headers': preflightResponse.headers.get('Access-Control-Allow-Headers'),
+                    'Allow-Credentials': preflightResponse.headers.get('Access-Control-Allow-Credentials')
+                };
+                
+                // Display the results
+                const preflightSuccess = preflightResponse.ok;
+                const preflightStatusClass = preflightSuccess ? 'success' : 'error';
+                outputPre.textContent += `> Preflight response: <span class="${preflightStatusClass}">${preflightResponse.status} ${preflightResponse.statusText}</span>\n`;
+                outputPre.textContent += '> CORS Headers:\n';
+                
+                Object.entries(corsHeaders).forEach(([key, value]) => {
+                    outputPre.textContent += `  - Access-Control-${key}: ${value || 'Not set'}\n`;
+                });
+                
+                // Test actual request
+                outputPre.textContent += '\n> Testing actual request (GET)...\n';
+                
+                const actualResponse = await fetch(endpoint, {
+                    method: 'GET',
+                    headers,
+                    credentials: 'include'
+                });
+                
+                const actualSuccess = actualResponse.ok;
+                const actualStatusClass = actualSuccess ? 'success' : 'error';
+                outputPre.textContent += `> Actual response: <span class="${actualStatusClass}">${actualResponse.status} ${actualResponse.statusText}</span>\n`;
+                
+                if (actualSuccess) {
+                    // Try to parse the response
+                    try {
+                        const responseData = await actualResponse.json();
+                        outputPre.textContent += '> Response data:\n';
+                        outputPre.textContent += JSON.stringify(responseData, null, 2) + '\n';
+                    } catch (e) {
+                        outputPre.textContent += '> Could not parse response as JSON\n';
+                    }
+                }
+                
+                // Update status
+                const success = preflightSuccess && actualSuccess;
+                statusDiv.textContent = success ? 'Status: Success ✅' : 'Status: Failed ❌';
+                statusDiv.className = success ? 'success' : 'error';
+                
+                // Store test result
+                testResults.push({
+                    endpoint,
+                    includeCustomHeaders,
+                    success,
+                    corsHeaders,
+                    preflightStatus: preflightResponse.status
+                });
+                
+            } catch (error) {
+                outputPre.textContent += `> Error: ${error.message}\n`;
+                statusDiv.textContent = 'Status: Error ❌';
+                statusDiv.className = 'error';
+                
+                // Store test result
+                testResults.push({
+                    endpoint,
+                    includeCustomHeaders,
+                    success: false,
+                    error: error.message
+                });
+            }
+            
+            // Update recommendations
+            updateRecommendations();
+        }
+        
+        function updateRecommendations() {
+            if (testResults.length === 0) {
+                recommendationsDiv.style.display = 'none';
+                return;
+            }
+            
+            recommendationsDiv.style.display = 'block';
+            recommendationsList.innerHTML = '';
+            
+            // Check for missing headers
+            const headerTests = testResults.filter(r => r.includeCustomHeaders);
+            const headerProblems = headerTests.filter(r => !r.success);
+            
+            if (headerProblems.length > 0) {
+                const li = document.createElement('li');
+                li.className = 'error';
+                li.textContent = 'Your backend CORS configuration needs to allow additional headers (Cache-Control, Pragma).';
+                recommendationsList.appendChild(li);
+                
+                const details = document.createElement('pre');
+                details.textContent = `Add these headers to your CORS configuration:
+app.use(cors({
+    // ...existing config
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma", "Expires"]
+}));`;
+                li.appendChild(details);
+            }
+            
+            // Check for credentials issues
+            const credentialsIssues = testResults.filter(r => 
+                r.corsHeaders && r.corsHeaders['Allow-Credentials'] !== 'true');
+            
+            if (credentialsIssues.length > 0) {
+                const li = document.createElement('li');
+                li.className = 'warning';
+                li.textContent = 'The backend is not allowing credentials. This might cause authentication issues.';
+                recommendationsList.appendChild(li);
+            }
+            
+            // Check for origin issues
+            const originIssues = testResults.filter(r => 
+                r.corsHeaders && r.corsHeaders['Allow-Origin'] !== 'http://localhost:5173');
+            
+            if (originIssues.length > 0) {
+                const li = document.createElement('li');
+                li.className = 'error';
+                li.textContent = 'The backend is not allowing requests from http://localhost:5173.';
+                recommendationsList.appendChild(li);
+            }
+        }
+        
+        // Test buttons
+        document.getElementById('testHealthBtn').addEventListener('click', () => {
+            testEndpoint(`${baseUrl}/`, false, 'Testing Health Endpoint');
+        });
+        
+        document.getElementById('testAuthBtn').addEventListener('click', () => {
+            testEndpoint(`${baseUrl}/api/auth/check`, false, 'Testing Auth Check Endpoint');
+        });
+        
+        document.getElementById('testAuthWithHeadersBtn').addEventListener('click', () => {
+            testEndpoint(`${baseUrl}/api/auth/check`, true, 'Testing Auth Check Endpoint with Custom Headers');
+        });
+        
+        document.getElementById('testAllBtn').addEventListener('click', async () => {
+            // Clear previous results
+            resultsDiv.innerHTML = '';
+            testResults = [];
+            
+            await testEndpoint(`${baseUrl}/`, false, 'Testing Health Endpoint');
+            await testEndpoint(`${baseUrl}/api/auth/check`, false, 'Testing Auth Check Endpoint');
+            await testEndpoint(`${baseUrl}/api/auth/check`, true, 'Testing Auth Check Endpoint with Custom Headers');
+        });
+        
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            resultsDiv.innerHTML = '';
+            recommendationsDiv.style.display = 'none';
+            testResults = [];
+        });
+    </script>
+</body>
+</html>

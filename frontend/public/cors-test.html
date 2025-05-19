@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigma Chatter - CORS Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 10px;
+            color: #4f46e5;
+        }
+        .test-group {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4338ca;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sigma Chatter - CORS Test Tool</h1>
+    <p>This tool helps diagnose CORS (Cross-Origin Resource Sharing) issues between the frontend and backend.</p>
+    
+    <div class="test-group">
+        <h2>1. Basic Health Check</h2>
+        <p>Tests if the backend API server is running and reachable.</p>
+        <button onclick="testHealth()">Run Health Check</button>
+        <div id="health-result" class="result"></div>
+    </div>
+    
+    <div class="test-group">
+        <h2>2. Authentication Check</h2>
+        <p>Tests if the authentication API is configured correctly for CORS.</p>
+        <button onclick="testAuth()">Test Auth Endpoint</button>
+        <div id="auth-result" class="result"></div>
+    </div>
+    
+    <div class="test-group">
+        <h2>3. Custom Headers Test</h2>
+        <p>Tests if the backend accepts custom headers in CORS requests.</p>
+        <button onclick="testCustomHeaders()">Test Custom Headers</button>
+        <div id="headers-result" class="result"></div>
+    </div>
+    
+    <div class="test-group">
+        <h2>4. Credentials Test</h2>
+        <p>Tests if credentials are properly handled in CORS requests.</p>
+        <button onclick="testCredentials()">Test Credentials</button>
+        <div id="credentials-result" class="result"></div>
+    </div>
+
+    <div class="test-group">
+        <h2>5. API Environment</h2>
+        <p>Current API configuration:</p>
+        <div id="env-info" class="result"></div>
+    </div>
+
+    <script>
+        // API base URL - same as used in the app
+        const API_URL = 'http://localhost:5001';
+        
+        // Display API URL in the environment info section
+        document.getElementById('env-info').textContent = `API URL: ${API_URL}`;
+
+        // Helper function to update result display
+        function updateResult(elementId, success, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = success ? 'result success' : 'result error';
+        }
+
+        // Test 1: Health Check
+        async function testHealth() {
+            try {
+                updateResult('health-result', false, 'Testing...');
+                const response = await fetch(`${API_URL}`, {
+                    method: 'GET'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateResult('health-result', true, `Success! API is running.\n\nResponse: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    updateResult('health-result', false, `Failed: HTTP ${response.status} - ${response.statusText}`);
+                }
+            } catch (error) {
+                updateResult('health-result', false, `Error: ${error.message}\n\nThe API server might be down or unreachable.`);
+            }
+        }
+
+        // Test 2: Authentication API
+        async function testAuth() {
+            try {
+                updateResult('auth-result', false, 'Testing auth endpoint...');
+                const response = await fetch(`${API_URL}/api/auth/check`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateResult('auth-result', true, `Success! Auth endpoint responds correctly.\n\nResponse: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    // This may actually be normal if not authenticated
+                    updateResult('auth-result', true, `Auth endpoint responded with status: ${response.status}\nThis is normal if you're not logged in.`);
+                }
+            } catch (error) {
+                updateResult('auth-result', false, `CORS Error: ${error.message}\n\nThe auth endpoint might be rejecting cross-origin requests.`);
+            }
+        }
+
+        // Test 3: Custom Headers
+        async function testCustomHeaders() {
+            try {
+                updateResult('headers-result', false, 'Testing custom headers...');
+                const response = await fetch(`${API_URL}/api/auth/ping`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer test',
+                        'Cache-Control': 'no-cache',
+                        'X-Test-Header': 'test-value'
+                    }
+                });
+                
+                updateResult('headers-result', true, `Headers accepted! Status: ${response.status}`);
+            } catch (error) {
+                updateResult('headers-result', false, `CORS Headers Error: ${error.message}\n\nThe server might be rejecting some headers.`);
+            }
+        }
+
+        // Test 4: Credentials
+        async function testCredentials() {
+            try {
+                updateResult('credentials-result', false, 'Testing credentials support...');
+                const response = await fetch(`${API_URL}/api/auth/check`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                updateResult('credentials-result', true, `Credentials supported! Status: ${response.status}`);
+            } catch (error) {
+                updateResult('credentials-result', false, `CORS Credentials Error: ${error.message}\n\nThe server might not be configured to accept credentials.`);
+            }
+        }
+
+        // Run health check automatically
+        window.onload = testHealth;
+    </script>
+</body>
+</html>

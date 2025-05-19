@@ -1,0 +1,96 @@
+/**
+ * Animation performance optimizations - Enhanced Version
+ * These settings help reduce twitching, flickering, and reflow issues during animations and theme changes
+ */
+
+/* Only apply hardware acceleration to elements that actually animate to prevent excessive memory usage */
+.animate-item, 
+.transition-all, 
+.motion-safe\:transition-all,
+.animate-spin,
+.animate-pulse,
+.hover\:scale,
+.active\:scale,
+.focus\:scale {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Targeted hardware acceleration for specific UI elements that need it */
+.sidebar,
+.chat-container,
+.message-list,
+.message-input,
+.navbar {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Apply smoother transitions only after initial load */
+:root:not(.theme-applied) {
+  transition: background-color 0.2s ease-out, 
+              color 0.2s ease-out;
+}
+
+/* Reduce twitching during theme changes */
+html, body {
+  transition: background-color 0.2s ease-out, 
+              color 0.2s ease-out;
+}
+
+/* Theme transition smoothing */
+[data-theme]:not(.theme-applied) {
+  transition: background-color 0.2s ease-out, 
+              color 0.2s ease-out,
+              border-color 0.2s ease-out,
+              box-shadow 0.2s ease-out;
+}
+
+/* Fix for CSS flicker during theme changes */
+.theme-applied * {
+  transition: none !important;
+}
+
+/* Optimize connection status component to prevent twitching */
+.connection-status {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
+              opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Fix abrupt color changes */
+:root {
+  color-scheme: light dark;
+}
+
+/* Prevent layout shifts */
+.layout-stable {
+  contain: layout;
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) */
+.no-fouc {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.1s ease;
+}
+.fouc-ready {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Disable all animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

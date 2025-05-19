@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sigma Chatter - A real-time chat application" />
+    <meta name="theme-color" content="#2a303c" />
+    <!-- Preconnect to backend for faster initial connection -->
+    <link rel="preconnect" href="http://localhost:5001" />
+    <link rel="dns-prefetch" href="http://localhost:5001" />
+    <title>Sigma Chatter</title>
+    <!-- Performance optimization scripts before React loads -->
+    <script src="/animation-performance.js"></script>
+    <script src="/theme-preload.js"></script>
+    <!-- Critical CSS to prevent layout shift and improve performance -->
+    <style>
+      html { visibility: visible; opacity: 1; }
+      /* Performance optimization styles */
+      .hardware-accelerated {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+        will-change: opacity, transform;
+      }
+      .theme-applied * {
+        transition: none !important;
+      }
+      /* Force GPU acceleration for animations */
+      * {
+        text-rendering: optimizeSpeed;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Remove the no-transition class after a delay to allow animations after initial load
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-applied');
+      }, 300);
+    </script>
+  </body>
+</html>

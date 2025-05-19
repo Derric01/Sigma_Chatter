@@ -1,0 +1,98 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: [
+      "light",
+      "dark",
+      "cupcake",
+      "bumblebee",
+      "emerald",
+      "corporate",
+      "synthwave",
+      "retro",
+      "cyberpunk",
+      "valentine",
+      "halloween",
+      "garden",
+      "forest",
+      "aqua",
+      "lofi",
+      "pastel",
+      "fantasy",
+      "wireframe",
+      "black",
+      "luxury",
+      "dracula",
+      "cmyk",
+      "autumn",
+      "business",
+      "acid",
+      "lemonade",
+      "night",
+      "coffee",
+      "winter",
+      {
+        dim: {
+          "--rounded-box": "0.5rem",
+          "--rounded-btn": "0.5rem",
+          "primary": "#4B5563", // Gray-600
+          "primary-content": "#E5E7EB", // Gray-200
+          "secondary": "#1F2937", // Gray-800
+          "accent": "#6B7280", // Gray-500
+          "neutral": "#374151", // Gray-700
+          "base-100": "#111827", // Gray-900
+          "base-200": "#1F2937", // Gray-800
+          "base-300": "#374151", // Gray-700
+          "base-content": "#D1D5DB", // Gray-300
+          "info": "#0EA5E9", // Sky-500
+          "success": "#22C55E", // Green-500
+          "warning": "#F59E0B", // Amber-500
+          "error": "#EF4444" // Red-500
+        }
+      },
+      {
+        nord: {
+          "--rounded-box": "0.5rem",
+          "--rounded-btn": "0.5rem",
+          "primary": "#5E81AC", // Enhanced Nord blue
+          "primary-content": "#ECEFF4", // Nord Snow Storm
+          "secondary": "#81A1C1", // Lighter Nord blue
+          "accent": "#88C0D0", // Nord Frost
+          "neutral": "#4C566A", // Nord Polar Night
+          "base-100": "#2E3440", // Dark Nord background
+          "base-200": "#3B4252", // Medium Nord background
+          "base-300": "#434C5E", // Light Nord background
+          "base-content": "#D8DEE9", // Nord Snow Storm
+          "info": "#8FBCBB", // Nord Frost
+          "success": "#A3BE8C", // Nord Aurora
+          "warning": "#EBCB8B", // Nord Aurora
+          "error": "#BF616A" // Nord Aurora
+        }
+      },
+      {
+        sunset: {
+          "--rounded-box": "0.5rem",
+          "--rounded-btn": "0.5rem",
+          "primary": "#F97316", // Orange-500
+          "primary-content": "#FEF3C7", // Amber-100
+          "secondary": "#EA580C", // Orange-600
+          "accent": "#F59E0B", // Amber-500
+          "neutral": "#7C2D12", // Orange-900
+          "base-100": "#431407", // Darker reddish brown
+          "base-200": "#7C2D12", // Orange-900
+          "base-300": "#9A3412", // Orange-800
+          "base-content": "#FFEDD5", // Orange-50
+          "info": "#0EA5E9", // Sky-500
+          "success": "#22C55E", // Green-500
+          "warning": "#EAB308", // Yellow-500
+          "error": "#EF4444" // Red-500
+        }
+      }
+    ],
+  },
+};

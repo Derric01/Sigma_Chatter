@@ -1,0 +1,47 @@
+/* Theme-adaptive pattern overlay for auth pages */
+
+/* Dragon Scales pattern for NoChatSelected background */
+.pattern-dragon-scales {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50C37.5 50 25 37.5 25 25S37.5 0 50 0s25 12.5 25 25s-12.5 25-25 25zm0-50C25 0 0 25 0 50s25 50 50 50s50-25 50-50S75 0 50 0z' fill='currentColor' fill-opacity='1'/%3E%3C/svg%3E");
+  color: hsl(var(--p));
+  background-size: 40px 40px;
+}
+.pattern-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='currentColor' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 40px 40px;
+  background-color: transparent;
+  color: hsl(var(--pc));
+}
+
+.auth-container {
+  background-color: hsl(var(--p));
+}
+
+/* Make auth forms use theme colors */
+.auth-form {
+  background-color: hsl(var(--b2));
+  border-color: hsl(var(--b3));
+}
+
+.auth-form input {
+  background-color: hsl(var(--b1));
+  color: hsl(var(--bc));
+  border-color: hsl(var(--b3));
+}
+
+.auth-form input:focus {
+  border-color: hsl(var(--p));
+}
+
+/* Theme-specific style enhancements */
+[data-theme="dim"] .auth-container {
+  border-left: 4px solid #4B5563;
+}
+
+[data-theme="nord"] .auth-container {
+  border-left: 4px solid #5E81AC;
+}
+
+[data-theme="sunset"] .auth-container {
+  border-left: 4px solid #F97316;
+}

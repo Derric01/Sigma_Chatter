@@ -1,0 +1,280 @@
+/* Custom theme overrides to make dim, nord, and sunset more distinct */
+
+/* DIM theme overrides */
+[data-theme="dim"] {
+  --p: 220 14% 51%; /* Primary: Gray-600 */
+  --pc: 220 13% 91%; /* Primary content: Gray-200 */
+  --s: 215 28% 17%; /* Secondary: Gray-800 */
+  --sc: 220 13% 91%; /* Secondary content: Gray-200 */
+  --a: 220 9% 46%; /* Accent: Gray-500 */
+  --ac: 220 13% 91%; /* Accent content: Gray-200 */
+  --n: 218 17% 27%; /* Neutral: Gray-700 */
+  --nc: 220 13% 91%; /* Neutral content: Gray-200 */
+  --b1: 222 47% 11%; /* Base 100: Gray-900 */
+  --b2: 215 28% 17%; /* Base 200: Gray-800 */
+  --b3: 218 17% 27%; /* Base 300: Gray-700 */
+  --bc: 220 13% 83%; /* Base content: Gray-300 */
+  
+  /* Add a subtle geometric pattern to dim theme background */
+  background-image: 
+    linear-gradient(to right, rgba(75, 85, 99, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(75, 85, 99, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  
+  /* Add a subtle gray border to all components in dim theme for better distinction */
+  .btn, .card, .input, .select, .textarea {
+    border: 1px solid rgba(156, 163, 175, 0.3); /* Gray-400 with low opacity */
+  }
+  
+  /* Add distinctive header style */
+  h1, h2, h3 {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+  }
+}
+
+/* NORD theme overrides */
+[data-theme="nord"] {
+  --p: 210 34% 52%; /* Primary: Enhanced Nord blue */
+  --pc: 218 27% 94%; /* Primary content: Nord Snow Storm */
+  --s: 209 34% 63%; /* Secondary: Lighter Nord blue */
+  --sc: 218 27% 94%; /* Secondary content: Nord Snow Storm */
+  --a: 197 37% 67%; /* Accent: Nord Frost */
+  --ac: 222 16% 22%; /* Accent content: Dark Nord */
+  --n: 220 16% 36%; /* Neutral: Nord Polar Night */
+  --nc: 218 27% 94%; /* Neutral content: Nord Snow Storm */
+  --b1: 222 16% 22%; /* Base 100: Dark Nord background */
+  --b2: 219 21% 29%; /* Base 200: Medium Nord background */
+  --b3: 220 16% 36%; /* Base 300: Light Nord background */
+  --bc: 218 27% 85%; /* Base content: Nord Snow Storm */
+  
+  /* Add a distinctive nordic-inspired pattern */
+  background-image: 
+    radial-gradient(circle, rgba(94, 129, 172, 0.05) 2px, transparent 2px);
+  background-size: 24px 24px;
+  
+  /* Add a subtle blue tint to components in nord theme */
+  .btn, .card, .input, .select, .textarea {
+    border: 1px solid rgba(129, 161, 193, 0.3); /* Nord blue with low opacity */
+    box-shadow: 0 0 5px rgba(136, 192, 208, 0.15); /* Nord frost subtle glow */
+  }
+  
+  /* Add distinctive button style */
+  .btn {
+    background-image: linear-gradient(to bottom, rgba(94, 129, 172, 0.05), rgba(136, 192, 208, 0.1));
+  }
+  
+  /* Add distinctive header style */
+  h1, h2, h3 {
+    color: hsl(210 34% 63%);
+    letter-spacing: 0.5px;
+  }
+}
+
+/* SUNSET theme overrides */
+[data-theme="sunset"] {
+  --p: 25 95% 53%; /* Primary: Orange-500 */
+  --pc: 43 96% 96%; /* Primary content: Amber-100 */
+  --s: 19 91% 55%; /* Secondary: Orange-600 */
+  --sc: 43 96% 96%; /* Secondary content: Amber-100 */
+  --a: 38 92% 50%; /* Accent: Amber-500 */
+  --ac: 15 83% 15%; /* Accent content: Dark reddish brown */
+  --n: 15 83% 28%; /* Neutral: Orange-900 */
+  --nc: 43 96% 96%; /* Neutral content: Amber-100 */
+  --b1: 15 83% 15%; /* Base 100: Darker reddish brown */
+  --b2: 15 83% 28%; /* Base 200: Orange-900 */
+  --b3: 15 80% 34%; /* Base 300: Orange-800 */
+  --bc: 33 100% 96%; /* Base content: Orange-50 */
+  
+  /* Add a warm sunset-inspired gradient pattern */
+  background-image: 
+    linear-gradient(135deg, rgba(249, 115, 22, 0.05) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(249, 115, 22, 0.05) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(249, 115, 22, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(249, 115, 22, 0.05) 25%, transparent 25%);
+  background-size: 30px 30px;
+  
+  /* Add warm sunset glows to components */
+  .btn, .card, .input, .select, .textarea {
+    border: 1px solid rgba(249, 115, 22, 0.3); /* Orange-500 with low opacity */
+    box-shadow: 0 0 5px rgba(234, 88, 12, 0.2); /* Orange-600 glow */
+  }
+  
+  /* Add distinctive button style */
+  .btn {
+    background-image: linear-gradient(to bottom, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.15));
+  }
+  
+  /* Add distinctive header style */
+  h1, h2, h3 {
+    color: hsl(25 95% 53%);
+    text-shadow: 0 1px 3px rgba(124, 45, 18, 0.2);
+  }
+}
+
+/* Add highlighted indicators to theme selector when dim/nord/sunset is active */
+.theme-dim-active {
+  background: linear-gradient(to right, rgba(75, 85, 99, 0.2), transparent) !important;
+  border-left: 3px solid #4B5563 !important;
+  box-shadow: 0 0 10px rgba(75, 85, 99, 0.5) !important;
+}
+
+.theme-nord-active {
+  background: linear-gradient(to right, rgba(94, 129, 172, 0.2), transparent) !important;
+  border-left: 3px solid #5E81AC !important;
+  box-shadow: 0 0 10px rgba(94, 129, 172, 0.5) !important;
+}
+
+.theme-sunset-active {
+  background: linear-gradient(to right, rgba(249, 115, 22, 0.2), transparent) !important;
+  border-left: 3px solid #F97316 !important;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5) !important;
+}
+
+/* Special theme preview boxes unique styling */
+[data-theme="dim"] .bg-primary {
+  background: linear-gradient(135deg, #4B5563, #374151) !important;
+}
+
+[data-theme="nord"] .bg-primary {
+  background: linear-gradient(135deg, #5E81AC, #81A1C1) !important;
+}
+
+[data-theme="sunset"] .bg-primary {
+  background: linear-gradient(135deg, #F97316, #EA580C) !important;
+}
+
+/* Special styling for theme preview boxes - secondary */
+[data-theme="dim"] .bg-secondary {
+  background: linear-gradient(135deg, #1F2937, #111827) !important;
+}
+
+[data-theme="nord"] .bg-secondary {
+  background: linear-gradient(135deg, #81A1C1, #5E81AC) !important;
+}
+
+[data-theme="sunset"] .bg-secondary {
+  background: linear-gradient(135deg, #EA580C, #9A3412) !important;
+}
+
+/* Add animation to selected special theme */
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0px rgba(75, 85, 99, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(75, 85, 99, 0);
+  }
+}
+
+@keyframes pulse-border-blue {
+  0% {
+    box-shadow: 0 0 0 0px rgba(94, 129, 172, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(94, 129, 172, 0);
+  }
+}
+
+@keyframes pulse-border-orange {
+  0% {
+    box-shadow: 0 0 0 0px rgba(249, 115, 22, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0);
+  }
+}
+
+.theme-dim-active {
+  animation: pulse-border 1.5s infinite alternate;
+}
+
+.theme-nord-active {
+  animation: pulse-border-blue 1.5s infinite alternate;
+}
+
+.theme-sunset-active {
+  animation: pulse-border-orange 1.5s infinite alternate;
+}
+
+/* Special theme-specific button styling */
+
+/* DIM theme button styling */
+[data-theme="dim"] .btn-primary {
+  background-image: linear-gradient(to bottom, #4B5563, #374151) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dim"] .btn-primary:hover {
+  background-image: linear-gradient(to bottom, #5e6672, #4B5563) !important;
+}
+
+/* NORD theme button styling */
+[data-theme="nord"] .btn-primary {
+  background-image: linear-gradient(to bottom, #5E81AC, #5077A6) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 4px rgba(46, 52, 64, 0.2), inset 0 1px 0 rgba(236, 239, 244, 0.1) !important;
+}
+
+[data-theme="nord"] .btn-primary:hover {
+  background-image: linear-gradient(to bottom, #6D90BA, #5E81AC) !important;
+}
+
+/* SUNSET theme button styling */
+[data-theme="sunset"] .btn-primary {
+  background-image: linear-gradient(to bottom, #F97316, #EA580C) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 4px rgba(124, 45, 18, 0.3), inset 0 1px 0 rgba(252, 165, 85, 0.2) !important;
+}
+
+[data-theme="sunset"] .btn-primary:hover {
+  background-image: linear-gradient(to bottom, #FB923C, #F97316) !important;
+}
+
+/* Special theme-specific card styling */
+
+/* DIM theme card styling */
+[data-theme="dim"] .card {
+  border-radius: 4px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* NORD theme card styling */
+[data-theme="nord"] .card {
+  border-radius: 6px !important;
+  box-shadow: 0 4px 6px rgba(46, 52, 64, 0.15), inset 0 1px 0 rgba(236, 239, 244, 0.05) !important;
+  border-top: 1px solid rgba(129, 161, 193, 0.2) !important;
+  border-left: 1px solid rgba(129, 161, 193, 0.2) !important;
+}
+
+/* SUNSET theme card styling */
+[data-theme="sunset"] .card {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px rgba(124, 45, 18, 0.2), inset 0 1px 0 rgba(252, 165, 85, 0.1) !important;
+  border-top: 1px solid rgba(249, 115, 22, 0.2) !important;
+  border-left: 1px solid rgba(249, 115, 22, 0.2) !important;
+}
+
+/* Special theme input styling */
+
+/* DIM theme input styling */
+[data-theme="dim"] .input {
+  border-radius: 4px !important;
+  border: 1px solid rgba(75, 85, 99, 0.3) !important;
+  background-color: rgba(31, 41, 55, 0.5) !important;
+}
+
+/* NORD theme input styling */
+[data-theme="nord"] .input {
+  border-radius: 6px !important;
+  border: 1px solid rgba(94, 129, 172, 0.3) !important;
+  background-color: rgba(46, 52, 64, 0.5) !important;
+}
+
+/* SUNSET theme input styling */
+[data-theme="sunset"] .input {
+  border-radius: 8px !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+  background-color: rgba(124, 45, 18, 0.3) !important;
+}
